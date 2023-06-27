@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width">
+    <script>
+    </script>
 </head>
 <body>
 <div id="controls" style="float:right; margin: 20px;">
@@ -58,34 +60,34 @@ Stars
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 var size = 450
-var circlelower = size - 12
-var circleupper = size - 73
+var circlelower = size - 14
+var circleupper = size - 71
 var border = size - 82
-var bordercol = "#4466ff"
+var bordercol = "#2040aa"
 
-var textcol = "#ffffff"
+var textcol = "#ffffaa"
 var uppertext = 'COHORT EOS'
 var lowertext = 'DURIUS MELIUS VELOCIUS FORTIOR'
-var textfont = 'arial'
+var textfont = 'garamond'
 
-var planetradius = 60
-var planetoffset = 20
-var planetcolor = "#4466ff"
+var planetradius = 100
+var planetoffset = 50
+var planetcolor = "#2040aa"
 
-var sunradius = 40
+var sunradius = 45
 var edge = 3
-var sunintersect = sunradius-5
-var suncolor = "#ffffff"
+var sunintersect = sunradius-10
+var suncolor = "#ffffaa"
 var sunrays = 7
-var inangle = 130
+var inangle = 115
 var outangle = 195
-var raycolor = "#ffffff"
+var raycolor = "#ffffaa"
 
 var starpoints = 4
 var starouter = 20
 var starinner = 10
 var startopangle = 180
-var starcolor = "#ffffff"
+var starcolor = "#ffffaa"
 
 var sunY = 0
 
@@ -144,7 +146,8 @@ ${crown()}
   $('#svg_output').text(svg)
 }
 
-function numeral(color=suncolor, radius=planetradius, offset=planetoffset, width=45, height=70, stem=25, serif=15)
+function numeral(color=textcol, radius=planetradius, offset=planetoffset,
+                 width=45, height=70, stem=25, serif=15)
 {
   // Transform xy percentages to scale and across arcs
   function txy(x, y, o=offset) {
@@ -155,7 +158,7 @@ function numeral(color=suncolor, radius=planetradius, offset=planetoffset, width
   var arcside = txy(280,280,0)
   var width2 = width+serif*0.75
   return `
-    <path fill="${color}" stroke="#000000" style="stroke-width: 3" d="
+    <path fill="${color}" stroke="#000000" style="stroke-width: ${edge}" d="
       M ${txy( width,-height)}
       A ${arcserif} 0 0 1 ${txy( width2,-height+serif)}
       A ${arctop} 0 0 0 ${txy( stem, -height+serif*1.5)}
@@ -243,20 +246,20 @@ function star(points=starpoints, outer=starouter, inner=starinner, angle=startop
 function stars()
 {
   var positions = [
-    -270, 100,
-    -210, 80,
-    -150, 50,
-    -220, 130,
-    -140, 120,
-    -130, 180,
+    -270, 120,
+    -210, 100,
+    -150, 70,
+    -220, 150,
+    -140, 140,
+    -130, 200,
 
-    -80, 250,
-    -20, 200,
+    -80, 270,
+    -20, 220,
 
-    150, 110,
-    220, 60,
-    140, 200,
-    200, 140
+    150, 130,
+    220, 80,
+    140, 220,
+    200, 160
   ]
   var svg = []
   for (var st = 0; st < positions.length; st += 2) {
