@@ -64,7 +64,11 @@ Stars
 <label for="starouter">Outer:</label> <input id="starouter" type="number">
 <label for="starinner">Inner:</label> <input id="starinner" type="number">
 <label for="startopangle">Angle:</label> <input id="startopangle" type="number">
+<label for="staroffset">Offset:</label> <input id="staroffset" type="number">
+<label for="starscale">Scale:</label> <input id="starscale" type="number">
 <label for="starcolor">Color:</label> <input id="starcolor" type="color">
+<br>
+<label for="starpositions">Positions:</label> <input id="starpositions" type="text" style="width: 50em">
 <br>
 
 Numeral
@@ -123,6 +127,8 @@ var starpoints = 4
 var starouter = 20
 var starinner = 10
 var startopangle = 180
+var staroffset = 20
+var starscale = 1000
 var starcolor = "#ffffff"
 
 var numeralcol = "#ffffff"
@@ -132,6 +138,22 @@ var numeralwidth = 45
 var numeralheight = 70
 var numeralstem = 25
 var numeralserif = 15
+
+var starpositions = `
+-27, 12,
+-21, 10,
+-15, 7,
+-22, 15,
+-14, 14,
+-13, 20,
+
+-8, 27,
+-2, 22,
+
+15, 13,
+22, 8,
+14, 22,
+20, 16`.replace(/[\s\r\n]+/g, ' ')
 
 var sunY = 0
 
@@ -294,27 +316,12 @@ function star(points=starpoints, outer=starouter, inner=starinner, angle=startop
   return svg.join("\n")
 }
 
-function stars(offset=20)
+function stars(offset=staroffset, scale=starscale/100)
 {
-  var positions = [
-    -270, 120,
-    -210, 100,
-    -150, 70,
-    -220, 150,
-    -140, 140,
-    -130, 200,
-
-    -80, 270,
-    -20, 220,
-
-    150, 130,
-    220, 80,
-    140, 220,
-    200, 160
-  ]
+  var positions = starpositions.split(',').map(x => parseFloat(x))
   var svg = []
   for (var st = 0; st < positions.length; st += 2) {
-    svg.push(`    <use xlink:href="#star" x="${positions[st]}" y="${positions[st+1]+offset}" />\n`)
+    svg.push(`    <use xlink:href="#star" x="${positions[st]*scale}" y="${(positions[st+1]*scale)+offset}" />\n`)
   }
   return svg.join("\n")
 }
