@@ -22,32 +22,24 @@ input[type="color"] {
 <label for="borderedge">Edge:</label> <input id="borderedge" type="number">
 <br>
 
-<label for="textfont">Font:</label> <input id="textfont" type="text" style="width: 12em">
-<label for="textfontweight"></label> <input id="textfontweight" type="text" style="width: 6em">
-<label for="textcol">Color:</label> <input id="textcol" type="color">
-<label for="bordercol"></label> <input id="bordercol" type="color">
-<br>
-Upload font
+Font
 <input id="fontuploadurl" type="text">
 <input id="fontupload" type="file">
 <label for="textcircle">Circle:</label> <input id="textcircle" type="number">
-<label for="upperspan">Upper:</label> <input id="upperspan" type="number">
-<label for="lowerspan">Lower:</label> <input id="lowerspan" type="number">
+<label for="textcol">Color:</label> <input id="textcol" type="color">
+<label for="bordercol"></label> <input id="bordercol" type="color">
 <br>
 
 Upper
 <label for="uppertext">Text:</label> <input id="uppertext" type="text" style="width: 20em">
 <label for="fontsizeupper">Size:</label> <input id="fontsizeupper" type="number">
-<label for="letterspacingupper">Spacing:</label> <input id="letterspacingupper" type="number">
-<label for="wordspacingupper">Word:</label> <input id="wordspacingupper" type="number">
-<label for="circleupper">Circle:</label> <input id="circleupper" type="number">
+<label for="upperspan">Span:</label> <input id="upperspan" type="number">
 <br>
+
 Lower
 <label for="lowertext">Text:</label> <input id="lowertext" type="text" style="width: 20em">
 <label for="fontsizelower">Size:</label> <input id="fontsizelower" type="number">
-<label for="letterspacinglower">Spacing</label> <input id="letterspacinglower" type="number">
-<label for="wordspacinglower">Word:</label> <input id="wordspacinglower" type="number">
-<label for="circlelower">Circle:</label> <input id="circlelower" type="number">
+<label for="lowerspan">Span:</label> <input id="lowerspan" type="number">
 <br>
 
 Planet
@@ -129,10 +121,6 @@ var uploadedfont
 
 var fontsizeupper = 60
 var fontsizelower = 60
-var letterspacingupper = 0
-var letterspacinglower = 6
-var wordspacingupper = 30
-var wordspacinglower = 20
 
 var planetradius = 100
 var planetoffset = 50
@@ -190,7 +178,6 @@ function draw_svg()
 <svg width="800" height="800" xmlns="http://www.w3.org/2000/svg"
     viewBox="-${size} -${size} ${size*2} ${size*2}" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
-    ${textpaths()}
     ${star()}
   </defs>
   <circle cs="0" cy="0" r="${size}" fill="black" />
@@ -219,43 +206,9 @@ ${crown()}
   $('#svg_output').text(svg)
 }
 
-function textpaths()
+function bordertext(font=uploadedfont)
 {
-  if (uploadedfont) { return '' }
-  return `
-    <path id="circleCW" d="
-      M 0 ${circleupper}
-      a ${circleupper} ${circleupper} 0 0 1  0 -${2*circleupper}
-      a ${circleupper} ${circleupper} 0 0 1  0  ${2*circleupper}
-      Z
-    " />
-    <path id="circleCCW" d="
-      M 0 -${circlelower} 
-      a ${circlelower} ${circlelower} 0 0 0  0  ${2*circlelower}
-      a ${circlelower} ${circlelower} 0 0 0  0 -${2*circlelower}
-      Z
-    " />`
-}
-
-function bordertext()
-{
-  if (uploadedfont) { return bordertextpath(uploadedfont) }
-
-  return `
-  <text fill="${textcol}" font-size="${fontsizeupper}" style="font-family: &quot;${textfont}&quot;;" font-weight="${textfontweight}" letter-spacing="${letterspacingupper}" word-spacing="${wordspacingupper}">
-    <textPath xlink:href="#circleCW" text-anchor="middle" startOffset="50%">
-      ${uppertext}
-    </textPath>
-  </text>
-  <text fill="${textcol}" font-size="${fontsizelower}" style="font-family: &quot;${textfont}&quot;;" font-weight="${textfontweight}" letter-spacing="${letterspacinglower}" word-spacing="${wordspacinglower}">
-    <textPath xlink:href="#circleCCW" text-anchor="middle" startOffset="50%">
-      ${lowertext}
-    </textPath>
-  </text>`
-}
-
-function bordertextpath(font)
-{
+  if (!font) return ''
   var uppermodel = new makerjs.models.Text(font, uppertext, fontsizeupper)
   var upperarc = { type: 'arc', origin: [0,0], radius: textcircle, startAngle: 90-upperspan/2, endAngle: 90+upperspan/2 }
   makerjs.layout.childrenOnPath(uppermodel, upperarc, 0.5, true, true, true)
@@ -276,7 +229,6 @@ function bordertextpath(font)
     ${lowerpath}
     " />
     `
-
 }
 
 function numeral(color=numeralcol, radius=planetradius, offset=planetoffset, stroke=numeraledge,
