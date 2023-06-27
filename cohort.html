@@ -9,6 +9,9 @@
 input[type="number"] {
     width: 4em;
 }
+input[type="color"] {
+    width: 2em;
+}
     </style>
 </head>
 <body>
@@ -64,7 +67,8 @@ Stars
 <label for="starouter">Outer:</label> <input id="starouter" type="number">
 <label for="starinner">Inner:</label> <input id="starinner" type="number">
 <label for="startopangle">Angle:</label> <input id="startopangle" type="number">
-<label for="staroffset">Offset:</label> <input id="staroffset" type="number">
+<label for="staroffsetx">Offset:</label> <input id="staroffsetx" type="number">
+<label for="staroffsety"></label> <input id="staroffsety" type="number">
 <label for="starscale">Scale:</label> <input id="starscale" type="number">
 <label for="starcolor">Color:</label> <input id="starcolor" type="color">
 <br>
@@ -127,7 +131,8 @@ var starpoints = 4
 var starouter = 20
 var starinner = 10
 var startopangle = 180
-var staroffset = 20
+var staroffsetx = 0
+var staroffsety = 20
 var starscale = 1000
 var starcolor = "#ffffff"
 
@@ -316,12 +321,12 @@ function star(points=starpoints, outer=starouter, inner=starinner, angle=startop
   return svg.join("\n")
 }
 
-function stars(offset=staroffset, scale=starscale/100)
+function stars(offsetx=staroffsetx, offsety=staroffsety, scale=starscale/100)
 {
   var positions = starpositions.split(',').map(x => parseFloat(x))
   var svg = []
   for (var st = 0; st < positions.length; st += 2) {
-    svg.push(`    <use xlink:href="#star" x="${positions[st]*scale}" y="${(positions[st+1]*scale)+offset}" />\n`)
+    svg.push(`    <use xlink:href="#star" x="${positions[st]*scale+offsetx}" y="${(positions[st+1]*scale)+offsety}" />\n`)
   }
   return svg.join("\n")
 }
