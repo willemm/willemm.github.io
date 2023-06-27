@@ -61,9 +61,9 @@ Stars
 <script>
 var size = 450
 var circlelower = size - 14
-var circleupper = size - 71
+var circleupper = size - 68
 var border = size - 82
-var bordercol = "#2040aa"
+var bordercol = "#0c2079"
 
 var textcol = "#ffffff"
 var uppertext = 'COHORT EOS'
@@ -72,10 +72,10 @@ var textfont = 'garamond'
 
 var planetradius = 100
 var planetoffset = 50
-var planetcolor = "#2040aa"
+var planetcolor = "#0c2079"
 
 var sunradius = 45
-var edge = 3
+var edge = 5
 var sunintersect = sunradius-10
 var suncolor = "#ffffff"
 var sunrays = 7
@@ -95,7 +95,7 @@ function draw_svg()
 {
   var svg = `
 <svg width="800" height="800" xmlns="http://www.w3.org/2000/svg"
-    viewBox="-${size} -${size} ${size*2} ${size*2}" xmlns:xlink="http://www.w3.org/1999/xlink">
+    viewBox="-${size+10} -${size+10} ${size*2+20} ${size*2+20}" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
     <path id="circleCW" d="
       M 0 ${circleupper}
@@ -112,7 +112,7 @@ function draw_svg()
     ${star()}
   </defs>
   <circle cs="0" cy="0" r="${size}" fill="black" />
-  <path fill="${bordercol}" d="
+  <path fill="${bordercol}" stroke="#000000" style="stroke-width: 10;" d="
     M -${border} 0
     a ${border} ${border} 0 0 1  ${border*2} 0
     a ${border} ${border} 0 0 1 -${border*2} 0
@@ -243,7 +243,7 @@ function star(points=starpoints, outer=starouter, inner=starinner, angle=startop
   return svg.join("\n")
 }
 
-function stars()
+function stars(offset=20)
 {
   var positions = [
     -270, 120,
@@ -263,7 +263,7 @@ function stars()
   ]
   var svg = []
   for (var st = 0; st < positions.length; st += 2) {
-    svg.push(`    <use xlink:href="#star" x="${positions[st]}" y="${positions[st+1]}" />\n`)
+    svg.push(`    <use xlink:href="#star" x="${positions[st]}" y="${positions[st+1]+offset}" />\n`)
   }
   return svg.join("\n")
 }
