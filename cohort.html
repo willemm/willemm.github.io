@@ -121,7 +121,7 @@ var planetedge = 5
 var sunradius = 50
 var sunedge = 5
 var rayedge = 15
-var sunintersect = sunradius-5
+var sunintersect = 25
 var suncolor = "#ffffff"
 var sunrays = 7
 var inangle = 125
@@ -267,8 +267,9 @@ function planet(color=planetcolor, radius=planetradius, offset=planetoffset, edg
 }
 
 function sun(radius=sunradius, edgeradius=planetradius+planetedge,
-             intersectX=sunintersect, offset=planetoffset, color=suncolor)
+             intersect=sunintersect, offset=planetoffset, color=suncolor)
 {
+  var intersectX = Math.cos(intersect*Math.PI/180)*radius
   var intersectY = -Math.sqrt(edgeradius*edgeradius - intersectX*intersectX) + offset
   sunY = Math.sqrt(radius*radius - intersectX*intersectX) + intersectY
   intersectY = intersectY.toFixed(1)
