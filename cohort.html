@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cohort</title>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+<div id="controls" style="float:right; margin: 20px;">
+<label for="size">Size:</label> <input id="size" type="number">
+<label for="circlelower">Lower:</label> <input id="circlelower" type="number">
+<label for="circleupper">Upper:</label> <input id="circleupper" type="number">
+<label for="border">Border:</label> <input id="border" type="number">
+<br>
+
+Text
+<label for="uppertext">Upper:</label> <input id="uppertext" type="text">
+<label for="lowertext">Lower:</label> <input id="lowertext" type="text">
+<label for="textfont">Font:</label> <input id="textfont" type="text">
+<label for="textcol">Color:</label> <input id="textcol" type="color">
+<label for="bordercol">Border:</label> <input id="bordercol" type="color">
+<br>
+
+Planet
+<label for="planetradius">Radius:</label> <input id="planetradius" type="number">
+<label for="planetoffset">Offset:</label> <input id="planetoffset" type="number">
+<label for="planetcolor">Color:</label> <input id="planetcolor" type="color">
+<br>
+
+Sun
+<label for="sunradius">Radius:</label> <input id="sunradius" type="number">
+<label for="edge">Edge:</label> <input id="edge" type="number">
+<label for="sunintersect">Intersect:</label> <input id="sunintersect" type="number">
+<label for="suncolor">Color:</label> <input id="suncolor" type="color">
+<br>
+
+Rays
+<label for="sunrays">Number:</label> <input id="sunrays" type="number">
+<label for="inangle">Inside angle:</label> <input id="inangle" type="number">
+<label for="outangle">Outside angle:</label> <input id="outangle" type="number">
+<label for="raycolor">Color:</label> <input id="raycolor" type="color">
+<br>
+
+Stars
+<label for="starpoints">Points:</label> <input id="starpoints" type="number">
+<label for="starouter">Outer:</label> <input id="starouter" type="number">
+<label for="starinner">Inner:</label> <input id="starinner" type="number">
+<label for="startopangle">Angle:</label> <input id="startopangle" type="number">
+<label for="starcolor">Color:</label> <input id="starcolor" type="color">
+<br>
+<textarea id="svg_output" rows="30" cols="100" readonly>
+</textarea>
+
+</div>
+<div id="cohort"></div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+var size = 450
+var circlelower = size - 12
+var circleupper = size - 73
+var border = size - 82
+var bordercol = "#4466ff"
+
+var textcol = "#ffffff"
+var uppertext = 'COHORT EOS'
+var lowertext = 'DURIUS MELIUS VELOCIUS FORTIOR'
+var textfont = 'arial'
+
+var planetradius = 60
+var planetoffset = 20
+var planetcolor = "#4466ff"
+
+var sunradius = 40
+var edge = 3
+var sunintersect = sunradius-5
+var suncolor = "#ffffff"
+var sunrays = 7
+var inangle = 130
+var outangle = 195
+var raycolor = "#ffffff"
+
+var starpoints = 4
+var starouter = 20
+var starinner = 10
+var startopangle = 180
+var starcolor = "#ffffff"
+
+var sunY = 0
+
+function draw_svg()
+{
+  var svg = `
+<svg width="800" height="800" xmlns="http://www.w3.org/2000/svg"
+    viewBox="-${size} -${size} ${size*2} ${size*2}" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <path id="circleCW" d="
+      M 0 ${circleupper}
+      a ${circleupper} ${circleupper} 0 0 1  0 -${2*circleupper}
+      a ${circleupper} ${circleupper} 0 0 1  0  ${2*circleupper}
+      Z
+    " />
+    <path id="circleCCW" d="
+      M 0 -${circlelower} 
+      a ${circlelower} ${circlelower} 0 0 0  0  ${2*circlelower}
+      a ${circlelower} ${circlelower} 0 0 0  0 -${2*circlelower}
+      Z
+    " />
+    ${star()}
+  </defs>
+  <circle cs="0" cy="0" r="${size}" fill="black" />
+  <path fill="${bordercol}" d="
+    M -${border} 0
+    a ${border} ${border} 0 0 1  ${border*2} 0
+    a ${border} ${border} 0 0 1 -${border*2} 0
+    Z
+    M -${size} 0
+    a ${size} ${size} 0 0 0  ${size*2} 0
+    a ${size} ${size} 0 0 0 -${size*2} 0
+    Z
+  " />
+
+  <text fill="${textcol}" font-size="84" style="font-family: ${textfont};" font-weight="bold" letter-spacing="4" word-spacing="30">
+    <textPath xlink:href="#circleCW" text-anchor="middle" startOffset="50%">
+      ${uppertext}
+    </textPath>
+  </text>
+  <text fill="${textcol}" font-size="84" style="font-family: ${textfont};" font-weight="bold" letter-spacing="4" word-spacing="20">
+    <textPath xlink:href="#circleCCW" text-anchor="middle" startOffset="50%">
+      ${lowertext}
+    </textPath>
+  </text>
+${planet()}
+${numeral()}
+${sun()}
+${stars()}
+${crown()}
+
+</svg>
+`
+
+  $('#cohort').html(svg)
+  $('#svg_output').text(svg)
+}
+
+function numeral(color=suncolor, radius=planetradius, offset=planetoffset, width=45, height=70, stem=25, serif=15)
+{
+  // Transform xy percentages to scale and across arcs
+  function txy(x, y, o=offset) {
+    return `${x*(radius/100)} ${y*(radius/100)+o}`
+  }
+  var arcserif = txy(600,600,0)
+  var arctop = txy(400,400,0)
+  var arcside = txy(280,280,0)
+  var width2 = width+serif*0.75
+  return `
+    <path fill="${color}" stroke="#000000" style="stroke-width: 3" d="
+      M ${txy( width,-height)}
+      A ${arcserif} 0 0 1 ${txy( width2,-height+serif)}
+      A ${arctop} 0 0 0 ${txy( stem, -height+serif*1.5)}
+      A ${arcside} 0 0 1 ${txy( stem,  height-serif*1.5)}
+      A ${arctop} 0 0 0 ${txy( width2, height-serif)}
+      A ${arcserif} 0 0 1 ${txy( width, height)}
+      A ${arctop} 0 0 0 ${txy(-width, height)}
+      A ${arcserif} 0 0 1 ${txy(-width2, height-serif)}
+      A ${arctop} 0 0 0 ${txy(-stem,  height-serif*1.5)}
+      A ${arcside} 0 0 1 ${txy(-stem, -height+serif*1.5)}
+      A ${arctop} 0 0 0 ${txy(-width2,-height+serif)}
+      A ${arcserif} 0 0 1 ${txy(-width,-height)}
+      A ${arctop} 0 0 0 ${txy( width,-height)}
+      Z
+    " />`
+}
+
+function planet(color=planetcolor, radius=planetradius, offset=planetoffset)
+{
+  return `
+    <path id="planet" fill="${color}" d="
+      M -${radius} ${offset}
+      a ${radius} ${radius} 0 0 1  ${radius*2} 0
+      a ${radius} ${radius} 0 0 1 -${radius*2} 0
+      Z
+    " />`
+}
+
+function sun(radius=sunradius, edgeradius=planetradius+edge,
+             intersectX=sunintersect, offset=planetoffset, color=suncolor)
+{
+  var intersectY = -Math.sqrt(edgeradius*edgeradius - intersectX*intersectX) + offset
+  sunY = Math.sqrt(radius*radius - intersectX*intersectX) + intersectY
+  intersectY = intersectY.toFixed(1)
+  return `
+    <path id="sun" fill="${suncolor}" d="
+      M -${intersectX} ${intersectY}
+      A ${radius} ${radius} 0 0 1  ${intersectX} ${intersectY}
+      A ${edgeradius} ${edgeradius} 0 0 0 -${intersectX} ${intersectY}
+      Z
+    " />`
+}
+
+function crown(inan=inangle, outan=outangle, inr=sunradius+edge,
+               outr=border-edge, sunoffset=sunY, color=raycolor, rays=sunrays)
+{
+  var svg = []
+  for (var step = -((sunrays-1)); step <= ((sunrays-1)); step += 2) {
+    svg.push(crownray((sunrays+1)/2, step, inan/(rays*2-1), outan/(rays*2-1), inr, outr, sunoffset, color))
+  }
+  return svg.join("\n")
+}
+
+function crownray(idoffs, step, inan, outan, inr, outr, sunoffset, color)
+{
+  var ian1 = inan*(Math.PI/180)*(step-0.5)
+  var ian2 = inan*(Math.PI/180)*(step+0.5)
+  var oan1 = outan*(Math.PI/180)*(step-0.5)
+  var oan2 = outan*(Math.PI/180)*(step+0.5)
+  return `
+    <path id="crownray${idoffs+step}" fill="${color}" d="
+    M ${inr * Math.sin(ian1)} ${(-inr * Math.cos(ian1) + sunoffset).toFixed(1)}
+    A ${inr} ${inr} 0 0 1  ${inr * Math.sin(ian2)} ${(-inr * Math.cos(ian2) + sunoffset).toFixed(1)}
+    L ${outr * Math.sin(oan2)} ${-outr * Math.cos(oan2)}
+    A ${outr} ${outr} 0 0 0  ${outr * Math.sin(oan1)} ${-outr * Math.cos(oan1)}
+    Z
+  " />`
+}
+
+function star(points=starpoints, outer=starouter, inner=starinner, angle=startopangle, color=starcolor)
+{
+  var svg = [`<path id="star" fill="${color}" d="`]
+  cmd = '      M'
+  for (pt = 0; pt < points; pt++) {
+    an = (angle + (pt * 360)/points) * Math.PI/180
+    svg.push(`${cmd} ${(Math.sin(an)*outer).toFixed(1)} ${(Math.cos(an)*outer).toFixed(1)}`)
+    an = (angle + ((pt+0.5) * 360)/points) * Math.PI/180
+    cmd = '      L'
+    svg.push(`${cmd} ${(Math.sin(an)*inner).toFixed(1)} ${(Math.cos(an)*inner).toFixed(1)}`)
+  }
+  svg.push('      Z','    " />')
+  return svg.join("\n")
+}
+
+function stars()
+{
+  var positions = [
+    -270, 100,
+    -210, 80,
+    -150, 50,
+    -220, 130,
+    -140, 120,
+    -130, 180,
+
+    -80, 250,
+    -20, 200,
+
+    150, 110,
+    220, 60,
+    140, 200,
+    200, 140
+  ]
+  var svg = []
+  for (var st = 0; st < positions.length; st += 2) {
+    svg.push(`    <use xlink:href="#star" x="${positions[st]}" y="${positions[st+1]}" />\n`)
+  }
+  return svg.join("\n")
+}
+
+add_controls()
+draw_svg()
+
+function add_controls()
+{
+  $('#controls input').each(function() {
+    var thisid = this.id
+    this.value = window[this.id]
+    if (this.type == "number") {
+      $(this).change(function() { window[thisid] = parseFloat(this.value); draw_svg() })
+    } else {
+      $(this).change(function() { window[thisid] = this.value; draw_svg() })
+    }
+  })
+}
+
+</script>
+</html>
