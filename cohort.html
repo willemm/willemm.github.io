@@ -5,34 +5,52 @@
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width">
-    <script>
-    </script>
+    <style>
+input[type="number"] {
+    width: 4em;
+}
+input[type="text"] {
+    width: 20em;
+}
+    </style>
 </head>
 <body>
 <div id="controls" style="float:right; margin: 20px;">
 <label for="size">Size:</label> <input id="size" type="number">
-<label for="circlelower">Lower:</label> <input id="circlelower" type="number">
-<label for="circleupper">Upper:</label> <input id="circleupper" type="number">
 <label for="border">Border:</label> <input id="border" type="number">
-<br>
-
-Text
-<label for="uppertext">Upper:</label> <input id="uppertext" type="text">
-<label for="lowertext">Lower:</label> <input id="lowertext" type="text">
+<label for="borderedge">Edge:</label> <input id="borderedge" type="number">
 <label for="textfont">Font:</label> <input id="textfont" type="text">
 <label for="textcol">Color:</label> <input id="textcol" type="color">
-<label for="bordercol">Border:</label> <input id="bordercol" type="color">
+<label for="bordercol"></label> <input id="bordercol" type="color">
+<label for="borderstroke"></label> <input id="borderstroke" type="color">
+<br>
+
+Upper
+<label for="uppertext">Text:</label> <input id="uppertext" type="text">
+<label for="fontsizeupper">Size:</label> <input id="fontsizeupper" type="number">
+<label for="letterspacingupper">Spacing:</label> <input id="letterspacingupper" type="number">
+<label for="wordspacingupper">Word:</label> <input id="wordspacingupper" type="number">
+<label for="circleupper">Circle:</label> <input id="circleupper" type="number">
+<br>
+Lower
+<label for="lowertext">Text:</label> <input id="lowertext" type="text">
+<label for="fontsizelower">Size:</label> <input id="fontsizelower" type="number">
+<label for="letterspacinglower">Spacing</label> <input id="letterspacinglower" type="number">
+<label for="wordspacinglower">Word:</label> <input id="wordspacinglower" type="number">
+<label for="circlelower">Circle:</label> <input id="circlelower" type="number">
 <br>
 
 Planet
 <label for="planetradius">Radius:</label> <input id="planetradius" type="number">
 <label for="planetoffset">Offset:</label> <input id="planetoffset" type="number">
+<label for="planetedge">Edge:</label> <input id="planetedge" type="number">
 <label for="planetcolor">Color:</label> <input id="planetcolor" type="color">
 <br>
 
 Sun
 <label for="sunradius">Radius:</label> <input id="sunradius" type="number">
-<label for="edge">Edge:</label> <input id="edge" type="number">
+<label for="sunedge">Edge:</label> <input id="sunedge" type="number">
+<label for="rayedge"></label> <input id="rayedge" type="number">
 <label for="sunintersect">Intersect:</label> <input id="sunintersect" type="number">
 <label for="suncolor">Color:</label> <input id="suncolor" type="color">
 <br>
@@ -51,6 +69,16 @@ Stars
 <label for="startopangle">Angle:</label> <input id="startopangle" type="number">
 <label for="starcolor">Color:</label> <input id="starcolor" type="color">
 <br>
+
+Numeral
+<label for="numeralwidth">Width:</label> <input id="numeralwidth" type="number">
+<label for="numeralheight">Height:</label> <input id="numeralheight" type="number">
+<label for="numeralstem">Stem:</label> <input id="numeralstem" type="number">
+<label for="numeralserif">Serif:</label> <input id="numeralserif" type="number">
+<label for="numeraledge">Edge:</label> <input id="numeraledge" type="number">
+<label for="numeralcol">Color:</label> <input id="numeralcol" type="color">
+<label for="numeraledgecol"></label> <input id="numeraledgecol" type="color">
+<br>
 <textarea id="svg_output" rows="30" cols="100" readonly>
 </textarea>
 
@@ -60,26 +88,37 @@ Stars
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 var size = 450
-var circlelower = size - 14
-var circleupper = size - 68
+var circlelower = size - 16
+var circleupper = size - 66
 var border = size - 82
 var bordercol = "#0c2079"
+var borderstroke = "#000000"
+var borderedge = 10
 
 var textcol = "#ffffff"
 var uppertext = 'COHORT EOS'
-var lowertext = 'DURIUS MELIUS VELOCIUS FORTIOR'
+var lowertext = 'STRONG ALONE STRONGER TOGETHER'
 var textfont = 'garamond'
+
+var fontsizeupper = 80
+var fontsizelower = 80
+var letterspacingupper = 0
+var letterspacinglower = 6
+var wordspacingupper = 30
+var wordspacinglower = 20
 
 var planetradius = 100
 var planetoffset = 50
 var planetcolor = "#0c2079"
+var planetedge = 5
 
-var sunradius = 45
-var edge = 5
-var sunintersect = sunradius-10
+var sunradius = 50
+var sunedge = 5
+var rayedge = 5
+var sunintersect = sunradius-5
 var suncolor = "#ffffff"
 var sunrays = 7
-var inangle = 115
+var inangle = 125
 var outangle = 195
 var raycolor = "#ffffff"
 
@@ -88,6 +127,14 @@ var starouter = 20
 var starinner = 10
 var startopangle = 180
 var starcolor = "#ffffff"
+
+var numeralcol = "#ffffff"
+var numeraledgecol = "#000000"
+var numeraledge = 5
+var numeralwidth = 45
+var numeralheight = 70
+var numeralstem = 25
+var numeralserif = 15
 
 var sunY = 0
 
@@ -112,7 +159,7 @@ function draw_svg()
     ${star()}
   </defs>
   <circle cs="0" cy="0" r="${size}" fill="black" />
-  <path fill="${bordercol}" stroke="#000000" style="stroke-width: 10;" d="
+  <path fill="${bordercol}" stroke="${borderstroke}" style="stroke-width: ${borderedge};" d="
     M -${border} 0
     a ${border} ${border} 0 0 1  ${border*2} 0
     a ${border} ${border} 0 0 1 -${border*2} 0
@@ -123,12 +170,12 @@ function draw_svg()
     Z
   " />
 
-  <text fill="${textcol}" font-size="84" style="font-family: ${textfont};" font-weight="bold" letter-spacing="4" word-spacing="30">
+  <text fill="${textcol}" font-size="${fontsizeupper}" style="font-family: ${textfont};" font-weight="bold" letter-spacing="${letterspacingupper}" word-spacing="${wordspacingupper}">
     <textPath xlink:href="#circleCW" text-anchor="middle" startOffset="50%">
       ${uppertext}
     </textPath>
   </text>
-  <text fill="${textcol}" font-size="84" style="font-family: ${textfont};" font-weight="bold" letter-spacing="4" word-spacing="20">
+  <text fill="${textcol}" font-size="${fontsizelower}" style="font-family: ${textfont};" font-weight="bold" letter-spacing="${letterspacinglower}" word-spacing="${wordspacinglower}">
     <textPath xlink:href="#circleCCW" text-anchor="middle" startOffset="50%">
       ${lowertext}
     </textPath>
@@ -146,8 +193,9 @@ ${crown()}
   $('#svg_output').text(svg)
 }
 
-function numeral(color=textcol, radius=planetradius, offset=planetoffset,
-                 width=45, height=70, stem=25, serif=15)
+function numeral(color=numeralcol, radius=planetradius, offset=planetoffset, stroke=numeraledge,
+                 width=numeralwidth, height=numeralheight, stem=numeralstem, serif=numeralserif,
+                 edgecolor=numeraledgecol)
 {
   // Transform xy percentages to scale and across arcs
   function txy(x, y, o=offset) {
@@ -158,7 +206,7 @@ function numeral(color=textcol, radius=planetradius, offset=planetoffset,
   var arcside = txy(280,280,0)
   var width2 = width+serif*0.75
   return `
-    <path fill="${color}" stroke="#000000" style="stroke-width: ${edge}" d="
+    <path fill="${color}" stroke="${edgecolor}" style="stroke-width: ${stroke}" d="
       M ${txy( width,-height)}
       A ${arcserif} 0 0 1 ${txy( width2,-height+serif)}
       A ${arctop} 0 0 0 ${txy( stem, -height+serif*1.5)}
@@ -176,9 +224,15 @@ function numeral(color=textcol, radius=planetradius, offset=planetoffset,
     " />`
 }
 
-function planet(color=planetcolor, radius=planetradius, offset=planetoffset)
+function planet(color=planetcolor, radius=planetradius, offset=planetoffset, edge=planetedge)
 {
   return `
+    <path id="planetoutline" fill="${suncolor}" d="
+      M -${radius+edge+1} ${offset}
+      a ${radius+edge+1} ${radius+edge+1} 0 0 1  ${(radius+edge+1)*2} 0
+      a ${radius+edge+1} ${radius+edge+1} 0 0 1 -${(radius+edge+1)*2} 0
+      Z
+    " />
     <path id="planet" fill="${color}" d="
       M -${radius} ${offset}
       a ${radius} ${radius} 0 0 1  ${radius*2} 0
@@ -187,7 +241,7 @@ function planet(color=planetcolor, radius=planetradius, offset=planetoffset)
     " />`
 }
 
-function sun(radius=sunradius, edgeradius=planetradius+edge,
+function sun(radius=sunradius, edgeradius=planetradius+planetedge,
              intersectX=sunintersect, offset=planetoffset, color=suncolor)
 {
   var intersectY = -Math.sqrt(edgeradius*edgeradius - intersectX*intersectX) + offset
@@ -202,8 +256,8 @@ function sun(radius=sunradius, edgeradius=planetradius+edge,
     " />`
 }
 
-function crown(inan=inangle, outan=outangle, inr=sunradius+edge,
-               outr=border-edge, sunoffset=sunY, color=raycolor, rays=sunrays)
+function crown(inan=inangle, outan=outangle, inr=sunradius+sunedge,
+               outr=border-rayedge, sunoffset=sunY, color=raycolor, rays=sunrays)
 {
   var svg = []
   for (var step = -((sunrays-1)); step <= ((sunrays-1)); step += 2) {
