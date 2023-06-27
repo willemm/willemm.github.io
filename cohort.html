@@ -7,10 +7,11 @@
     <meta name="viewport" content="width=device-width">
     <style>
 input[type="number"] {
-    width: 4em;
+    width: 3.5em;
 }
 input[type="color"] {
-    width: 2em;
+    width: 2.5em;
+    height: 1.5em;
 }
     </style>
 </head>
@@ -69,7 +70,7 @@ Stars
 <label for="startopangle">Angle:</label> <input id="startopangle" type="number">
 <label for="staroffsetx">Offset:</label> <input id="staroffsetx" type="number">
 <label for="staroffsety"></label> <input id="staroffsety" type="number">
-<label for="starscale">Scale:</label> <input id="starscale" type="number">
+<label for="starscale">Scale:</label> <input id="starscale" type="number" step="0.1">
 <label for="starcolor">Color:</label> <input id="starcolor" type="color">
 <br>
 <label for="starpositions">Positions:</label> <input id="starpositions" type="text" style="width: 50em">
@@ -133,7 +134,7 @@ var starinner = 10
 var startopangle = 180
 var staroffsetx = 0
 var staroffsety = 20
-var starscale = 1000
+var starscale = 10
 var starcolor = "#ffffff"
 
 var numeralcol = "#ffffff"
@@ -321,7 +322,7 @@ function star(points=starpoints, outer=starouter, inner=starinner, angle=startop
   return svg.join("\n")
 }
 
-function stars(offsetx=staroffsetx, offsety=staroffsety, scale=starscale/100)
+function stars(offsetx=staroffsetx, offsety=staroffsety, scale=starscale)
 {
   var positions = starpositions.split(',').map(x => parseFloat(x))
   var svg = []
