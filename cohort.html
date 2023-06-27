@@ -22,7 +22,6 @@ input[type="text"] {
 <label for="textfont">Font:</label> <input id="textfont" type="text">
 <label for="textcol">Color:</label> <input id="textcol" type="color">
 <label for="bordercol"></label> <input id="bordercol" type="color">
-<label for="borderstroke"></label> <input id="borderstroke" type="color">
 <br>
 
 Upper
@@ -88,20 +87,19 @@ Numeral
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 var size = 450
-var circlelower = size - 16
-var circleupper = size - 66
+var circlelower = size - 22
+var circleupper = size - 70
 var border = size - 82
 var bordercol = "#0c2079"
-var borderstroke = "#000000"
 var borderedge = 10
 
 var textcol = "#ffffff"
-var uppertext = 'COHORT EOS'
-var lowertext = 'STRONG ALONE STRONGER TOGETHER'
+var uppertext = '\u00b7 COHORT EOS \u00b7'
+var lowertext = 'STRONG ALONE \u00b7 STRONGER TOGETHER'
 var textfont = 'garamond'
 
-var fontsizeupper = 80
-var fontsizelower = 80
+var fontsizeupper = 75
+var fontsizelower = 75
 var letterspacingupper = 0
 var letterspacinglower = 6
 var wordspacingupper = 30
@@ -114,7 +112,7 @@ var planetedge = 5
 
 var sunradius = 50
 var sunedge = 5
-var rayedge = 5
+var rayedge = 15
 var sunintersect = sunradius-5
 var suncolor = "#ffffff"
 var sunrays = 7
@@ -142,7 +140,7 @@ function draw_svg()
 {
   var svg = `
 <svg width="800" height="800" xmlns="http://www.w3.org/2000/svg"
-    viewBox="-${size+10} -${size+10} ${size*2+20} ${size*2+20}" xmlns:xlink="http://www.w3.org/1999/xlink">
+    viewBox="-${size} -${size} ${size*2} ${size*2}" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
     <path id="circleCW" d="
       M 0 ${circleupper}
@@ -159,14 +157,14 @@ function draw_svg()
     ${star()}
   </defs>
   <circle cs="0" cy="0" r="${size}" fill="black" />
-  <path fill="${bordercol}" stroke="${borderstroke}" style="stroke-width: ${borderedge};" d="
+  <path fill="${bordercol}" d="
     M -${border} 0
     a ${border} ${border} 0 0 1  ${border*2} 0
     a ${border} ${border} 0 0 1 -${border*2} 0
     Z
-    M -${size} 0
-    a ${size} ${size} 0 0 0  ${size*2} 0
-    a ${size} ${size} 0 0 0 -${size*2} 0
+    M -${size-borderedge} 0
+    a ${size-borderedge} ${size-borderedge} 0 0 0  ${(size-borderedge)*2} 0
+    a ${size-borderedge} ${size-borderedge} 0 0 0 -${(size-borderedge)*2} 0
     Z
   " />
 
