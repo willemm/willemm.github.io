@@ -9,9 +9,6 @@
 input[type="number"] {
     width: 4em;
 }
-input[type="text"] {
-    width: 20em;
-}
     </style>
 </head>
 <body>
@@ -19,20 +16,21 @@ input[type="text"] {
 <label for="size">Size:</label> <input id="size" type="number">
 <label for="border">Border:</label> <input id="border" type="number">
 <label for="borderedge">Edge:</label> <input id="borderedge" type="number">
-<label for="textfont">Font:</label> <input id="textfont" type="text">
+<label for="textfont">Font:</label> <input id="textfont" type="text" style="width: 12em">
+<label for="textfontweight"></label> <input id="textfontweight" type="text" style="width: 6em">
 <label for="textcol">Color:</label> <input id="textcol" type="color">
 <label for="bordercol"></label> <input id="bordercol" type="color">
 <br>
 
 Upper
-<label for="uppertext">Text:</label> <input id="uppertext" type="text">
+<label for="uppertext">Text:</label> <input id="uppertext" type="text" style="width: 20em">
 <label for="fontsizeupper">Size:</label> <input id="fontsizeupper" type="number">
 <label for="letterspacingupper">Spacing:</label> <input id="letterspacingupper" type="number">
 <label for="wordspacingupper">Word:</label> <input id="wordspacingupper" type="number">
 <label for="circleupper">Circle:</label> <input id="circleupper" type="number">
 <br>
 Lower
-<label for="lowertext">Text:</label> <input id="lowertext" type="text">
+<label for="lowertext">Text:</label> <input id="lowertext" type="text" style="width: 20em">
 <label for="fontsizelower">Size:</label> <input id="fontsizelower" type="number">
 <label for="letterspacinglower">Spacing</label> <input id="letterspacinglower" type="number">
 <label for="wordspacinglower">Word:</label> <input id="wordspacinglower" type="number">
@@ -94,9 +92,10 @@ var bordercol = "#0c2079"
 var borderedge = 10
 
 var textcol = "#ffffff"
-var uppertext = '\u00b7 COHORT EOS \u00b7'
-var lowertext = 'STRONG ALONE \u00b7 STRONGER TOGETHER'
+var uppertext = 'COHORT EOS'
+var lowertext = '\u00b7 STRONG ALONE \u00b7 STRONGER TOGETHER \u00b7'
 var textfont = 'garamond'
+var textfontweight = 'bold'
 
 var fontsizeupper = 75
 var fontsizelower = 75
@@ -168,12 +167,12 @@ function draw_svg()
     Z
   " />
 
-  <text fill="${textcol}" font-size="${fontsizeupper}" style="font-family: ${textfont};" font-weight="bold" letter-spacing="${letterspacingupper}" word-spacing="${wordspacingupper}">
+  <text fill="${textcol}" font-size="${fontsizeupper}" style="font-family: &quot;${textfont}&quot;;" font-weight="${textfontweight}" letter-spacing="${letterspacingupper}" word-spacing="${wordspacingupper}">
     <textPath xlink:href="#circleCW" text-anchor="middle" startOffset="50%">
       ${uppertext}
     </textPath>
   </text>
-  <text fill="${textcol}" font-size="${fontsizelower}" style="font-family: ${textfont};" font-weight="bold" letter-spacing="${letterspacinglower}" word-spacing="${wordspacinglower}">
+  <text fill="${textcol}" font-size="${fontsizelower}" style="font-family: &quot;${textfont}&quot;;" font-weight="${textfontweight}" letter-spacing="${letterspacinglower}" word-spacing="${wordspacinglower}">
     <textPath xlink:href="#circleCCW" text-anchor="middle" startOffset="50%">
       ${lowertext}
     </textPath>
