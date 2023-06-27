@@ -20,10 +20,19 @@ input[type="color"] {
 <label for="size">Size:</label> <input id="size" type="number">
 <label for="border">Border:</label> <input id="border" type="number">
 <label for="borderedge">Edge:</label> <input id="borderedge" type="number">
+<br>
+
 <label for="textfont">Font:</label> <input id="textfont" type="text" style="width: 12em">
 <label for="textfontweight"></label> <input id="textfontweight" type="text" style="width: 6em">
 <label for="textcol">Color:</label> <input id="textcol" type="color">
 <label for="bordercol"></label> <input id="bordercol" type="color">
+<br>
+Upload font
+<input id="fontuploadurl" type="text">
+<input id="fontupload" type="file">
+<label for="textcircle">Circle:</label> <input id="textcircle" type="number">
+<label for="upperspan">Upper:</label> <input id="upperspan" type="number">
+<label for="lowerspan">Lower:</label> <input id="lowerspan" type="number">
 <br>
 
 Upper
@@ -92,22 +101,34 @@ Numeral
 <div id="cohort"></div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/makerjs@0/target/js/browser.maker.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bezier-js@2/bezier.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opentype.js@0/dist/opentype.js"></script>
 <script>
+var makerjs = require('makerjs')
+
 var size = 450
 var circlelower = size - 22
 var circleupper = size - 70
-var border = size - 82
+var border = size - 74
 var bordercol = "#0c2079"
 var borderedge = 10
 
+var upperspan = 83
+var lowerspan = 262
+var textcircle = 408
+
 var textcol = "#ffffff"
-var uppertext = 'COHORT EOS'
-var lowertext = '\u00b7 STRONG ALONE \u00b7 STRONGER TOGETHER \u00b7'
+var uppertext = 'COHORT  EOS'
+var lowertext = '\u00b7  STRONG ALONE  \u00b7  STRONGER  TOGETHER  \u00b7'
 var textfont = 'garamond'
 var textfontweight = 'bold'
 
-var fontsizeupper = 75
-var fontsizelower = 75
+var fontuploadurl = 'AquilaEthnocentric.ttf'
+var uploadedfont
+
+var fontsizeupper = 60
+var fontsizelower = 60
 var letterspacingupper = 0
 var letterspacinglower = 6
 var wordspacingupper = 30
@@ -169,18 +190,7 @@ function draw_svg()
 <svg width="800" height="800" xmlns="http://www.w3.org/2000/svg"
     viewBox="-${size} -${size} ${size*2} ${size*2}" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
-    <path id="circleCW" d="
-      M 0 ${circleupper}
-      a ${circleupper} ${circleupper} 0 0 1  0 -${2*circleupper}
-      a ${circleupper} ${circleupper} 0 0 1  0  ${2*circleupper}
-      Z
-    " />
-    <path id="circleCCW" d="
-      M 0 -${circlelower} 
-      a ${circlelower} ${circlelower} 0 0 0  0  ${2*circlelower}
-      a ${circlelower} ${circlelower} 0 0 0  0 -${2*circlelower}
-      Z
-    " />
+    ${textpaths()}
     ${star()}
   </defs>
   <circle cs="0" cy="0" r="${size}" fill="black" />
@@ -195,16 +205,7 @@ function draw_svg()
     Z
   " />
 
-  <text fill="${textcol}" font-size="${fontsizeupper}" style="font-family: &quot;${textfont}&quot;;" font-weight="${textfontweight}" letter-spacing="${letterspacingupper}" word-spacing="${wordspacingupper}">
-    <textPath xlink:href="#circleCW" text-anchor="middle" startOffset="50%">
-      ${uppertext}
-    </textPath>
-  </text>
-  <text fill="${textcol}" font-size="${fontsizelower}" style="font-family: &quot;${textfont}&quot;;" font-weight="${textfontweight}" letter-spacing="${letterspacinglower}" word-spacing="${wordspacinglower}">
-    <textPath xlink:href="#circleCCW" text-anchor="middle" startOffset="50%">
-      ${lowertext}
-    </textPath>
-  </text>
+${bordertext()}
 ${planet()}
 ${numeral()}
 ${sun()}
@@ -216,6 +217,66 @@ ${crown()}
 
   $('#cohort').html(svg)
   $('#svg_output').text(svg)
+}
+
+function textpaths()
+{
+  if (uploadedfont) { return '' }
+  return `
+    <path id="circleCW" d="
+      M 0 ${circleupper}
+      a ${circleupper} ${circleupper} 0 0 1  0 -${2*circleupper}
+      a ${circleupper} ${circleupper} 0 0 1  0  ${2*circleupper}
+      Z
+    " />
+    <path id="circleCCW" d="
+      M 0 -${circlelower} 
+      a ${circlelower} ${circlelower} 0 0 0  0  ${2*circlelower}
+      a ${circlelower} ${circlelower} 0 0 0  0 -${2*circlelower}
+      Z
+    " />`
+}
+
+function bordertext()
+{
+  if (uploadedfont) { return bordertextpath(uploadedfont) }
+
+  return `
+  <text fill="${textcol}" font-size="${fontsizeupper}" style="font-family: &quot;${textfont}&quot;;" font-weight="${textfontweight}" letter-spacing="${letterspacingupper}" word-spacing="${wordspacingupper}">
+    <textPath xlink:href="#circleCW" text-anchor="middle" startOffset="50%">
+      ${uppertext}
+    </textPath>
+  </text>
+  <text fill="${textcol}" font-size="${fontsizelower}" style="font-family: &quot;${textfont}&quot;;" font-weight="${textfontweight}" letter-spacing="${letterspacinglower}" word-spacing="${wordspacinglower}">
+    <textPath xlink:href="#circleCCW" text-anchor="middle" startOffset="50%">
+      ${lowertext}
+    </textPath>
+  </text>`
+}
+
+function bordertextpath(font)
+{
+  var uppermodel = new makerjs.models.Text(font, uppertext, fontsizeupper)
+  var upperarc = { type: 'arc', origin: [0,0], radius: textcircle, startAngle: 90-upperspan/2, endAngle: 90+upperspan/2 }
+  makerjs.layout.childrenOnPath(uppermodel, upperarc, 0.5, true, true, true)
+
+  var upperpath = makerjs.exporter.toSVGPathData(uppermodel, {origin: [0,0], accuracy: 0.1})
+
+  var lowermodel = new makerjs.models.Text(font, lowertext, fontsizelower)
+  var lowerarc = { type: 'arc', origin: [0,0], radius: textcircle, startAngle: 270-lowerspan/2, endAngle: 270+lowerspan/2 }
+  makerjs.layout.childrenOnPath(lowermodel, lowerarc, 0.5, false, true, true)
+
+  var lowerpath = makerjs.exporter.toSVGPathData(lowermodel, {origin: [0,0], accuracy: 0.1})
+
+  return `
+    <path id="textupper" fill="${textcol}" fill-rule="evenodd" d="
+    ${upperpath}
+    " />
+    <path id="textlower" fill="${textcol}" fill-rule="evenodd" d="
+    ${lowerpath}
+    " />
+    `
+
 }
 
 function numeral(color=numeralcol, radius=planetradius, offset=planetoffset, stroke=numeraledge,
@@ -340,6 +401,7 @@ function add_controls()
 {
   $('#controls input').each(function() {
     var thisid = this.id
+    if (this.type == "file") return
     this.value = window[this.id]
     if (this.type == "number") {
       $(this).change(function() { window[thisid] = parseFloat(this.value); draw_svg() })
@@ -347,6 +409,29 @@ function add_controls()
       $(this).change(function() { window[thisid] = this.value; draw_svg() })
     }
   })
+  $('#fontupload').change(do_fontload)
+  $('#fontuploadurl').change(do_fontload)
+  do_fontload()
+}
+
+function do_fontload()
+{
+  var files = document.getElementById('fontupload').files
+  if (files.length > 0) {
+    files[0].arrayBuffer().then(data => {
+      uploadedfont = opentype.parse(data)
+      draw_svg()
+    })
+  } else if (fontuploadurl) {
+    opentype.load(fontuploadurl, function(err, font) {
+      if (!err) {
+        uploadedfont = font
+        draw_svg()
+      }
+    })
+  } else {
+    uploadedfont = null
+  }
 }
 
 </script>
