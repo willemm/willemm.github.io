@@ -86,6 +86,8 @@ Numeral
 <label for="numeralcol">Color:</label> <input id="numeralcol" type="color">
 <label for="numeraledgecol"></label> <input id="numeraledgecol" type="color">
 <br>
+<button onclick="export_svg()">Export SVG</button>
+<br>
 <textarea id="svg_output" rows="30" cols="100" readonly>
 </textarea>
 
@@ -203,6 +205,12 @@ ${crown()}
 `
 
   $('#cohort').html(svg)
+  return svg
+}
+
+function export_svg()
+{
+  svg = draw_svg()
   $('#svg_output').text(svg)
 }
 
