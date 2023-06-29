@@ -252,7 +252,7 @@ function numeral(color=numeralcol, radius=planetradius, offset=planetoffset, str
   var arcside = txy(280,280,0)
   var width2 = width+serif*0.75
   return `
-    <path fill="${color}" stroke="${edgecolor}" style="stroke-width: ${stroke}" d="
+    <path fill="${color}" stroke="${edgecolor}" stroke-width="${stroke}" d="
       M ${txy( width,-height)}
       A ${arcserif} 0 0 1 ${txy( width2,-height+serif)}
       A ${arctop} 0 0 0 ${txy( stem, -height+serif*1.5)}
