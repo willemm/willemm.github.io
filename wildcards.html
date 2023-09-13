@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wildcards</title>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width">
+    <style>
+input[type="number"] {
+    width: 3.5em;
+}
+input[type="color"] {
+    width: 2.5em;
+    height: 1.5em;
+}
+    </style>
+</head>
+<body>
+<div id="controls" style="float:right; margin: 20px;">
+<label for="size">Size:</label> <input id="size" type="number">
+<label for="border">Border:</label> <input id="border" type="number">
+<label for="borderedge">Edge:</label> <input id="borderedge" type="number">
+<br>
+
+Font
+<input id="fontuploadurl" type="text">
+<input id="fontupload" type="file">
+<label for="textcircle">Circle:</label> <input id="textcircle" type="number">
+<label for="textcol">Color:</label> <input id="textcol" type="color">
+<label for="bordercol"></label> <input id="bordercol" type="color">
+<br>
+
+Upper
+<label for="uppertext">Text:</label> <input id="uppertext" type="text" style="width: 20em">
+<label for="fontsizeupper">Size:</label> <input id="fontsizeupper" type="number">
+<label for="upperspan">Span:</label> <input id="upperspan" type="number">
+<br>
+
+Lower
+<label for="lowertext">Text:</label> <input id="lowertext" type="text" style="width: 20em">
+<label for="fontsizelower">Size:</label> <input id="fontsizelower" type="number">
+<label for="lowerspan">Span:</label> <input id="lowerspan" type="number">
+<br>
+
+Stars
+<label for="starpoints">Points:</label> <input id="starpoints" type="number">
+<label for="starouter">Outer:</label> <input id="starouter" type="number">
+<label for="starinner">Inner:</label> <input id="starinner" type="number">
+<label for="startopangle">Angle:</label> <input id="startopangle" type="number">
+<label for="staroffsetx">Offset:</label> <input id="staroffsetx" type="number">
+<label for="staroffsety"></label> <input id="staroffsety" type="number">
+<label for="starscale">Scale:</label> <input id="starscale" type="number" step="0.1">
+<label for="starcolor">Color:</label> <input id="starcolor" type="color">
+<br>
+<label for="starpositions">Positions:</label> <input id="starpositions" type="text" style="width: 50em">
+<br>
+
+<button onclick="export_svg()">Export SVG</button>
+<br>
+<textarea id="svg_output" rows="30" cols="100" readonly>
+</textarea>
+
+</div>
+<div id="logo"></div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/makerjs@0/target/js/browser.maker.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bezier-js@2/bezier.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opentype.js@0/dist/opentype.js"></script>
+<script>
+var makerjs = require('makerjs')
+
+var size = 450
+var circlelower = size - 22
+var circleupper = size - 70
+var border = size - 82
+var bordercol = "#445566"
+var borderedge = 0
+
+var upperspan = 160
+var lowerspan = 98
+var textcircle = 408
+
+var textcol = "#bbccdd"
+var uppertext = '\u2665 \u2660 EOS  WILDCARDS \u2663 \u2666'
+var lowertext = 'EX SUPRA'
+var textfont = 'varino bold'
+var textfontweight = 'bold'
+
+var fontuploadurl = 'Varino Bold.ttf'
+var uploadedfont
+
+var fontsizeupper = 84
+var fontsizelower = 84
+
+var starpoints = 4
+var starouter = 5
+var starinner = 2.5
+var startopangle = 180
+var staroffsetx = 0
+var staroffsety = 0
+var starscale = 1
+var starcolor = "#ffffff"
+
+var starpositions = `
+-21, -82,
+-13, -202,
+-35, -171,
+-45, -21,
+-72, -93,
+-57, -237,
+-51, -300,
+-62, -325,
+-220, 249,
+-150, 262,
+-334, 82,
+-312, 124,
+-347, -50,
+-340, -72,
+-309, -133,
+-312, -163,
+-204, -283,
+-214, -271,
+ 
+302, 124,
+304, 152,
+347, -23,
+299, -173,
+338, 27,
+204, -283,
+184, -293,
+240, 256,
+210, 268,
+180, 244,
+286, 184,
+110, 283,
+47, -316,
+27, -339,
+47, -209,
+72, -94,
+51, -25,
+24, -72,
+31, -153,
+9, -251`.replace(/[\s\r\n]+/g, ' ')
+
+function draw_svg()
+{
+  var svg = `
+<svg width="800" height="800" xmlns="http://www.w3.org/2000/svg"
+    viewBox="-${size} -${size} ${size*2} ${size*2}" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    ${star()}
+  </defs>
+  <circle cs="0" cy="0" r="${size}" fill="black" />
+  <path fill="${bordercol}" d="
+    M -${border} 0
+    a ${border} ${border} 0 0 1  ${border*2} 0
+    a ${border} ${border} 0 0 1 -${border*2} 0
+    Z
+    M -${size-borderedge} 0
+    a ${size-borderedge} ${size-borderedge} 0 0 0  ${(size-borderedge)*2} 0
+    a ${size-borderedge} ${size-borderedge} 0 0 0 -${(size-borderedge)*2} 0
+    Z
+  " />
+
+${bordertext()}
+${stars()}
+
+  <path id="center" fill="#fff" d="
+    M 0 -30
+    L -10 -20
+    L -10 -30
+    A 5 5 0 0 0 -20 -30
+    L -20 20
+    L -82 145
+    L -80 160
+    L -55 142
+    L -35 138
+    L -15 142
+
+    L 0 153
+
+    L 15 142
+    L 35 138
+    L 55 142
+    L 80 160
+    L 82 145
+    L 20 20
+    L 20 -30
+    A 5 5 0 1 0 10 -30
+    L 10 -20
+
+    Z
+  " />
+  <path id="engines" fill="#567" d="
+    M 35 142
+    A 20 10 0 0 1 35 162
+    A 20 10 0 0 1 35 142
+    Z
+
+    M -35 142
+    A 20 10 0 0 0 -35 162
+    A 20 10 0 0 0 -35 142
+    Z
+    " />
+  <path id="stripes" stroke="#000" stroke-width="4" stroke-linecap="round" d="
+    M 50 162
+    L 48 149
+    M 20 162
+    L 22 149
+    M 40 162
+    L 39 146
+    M 30 162
+    L 31 146
+
+    M -50 162
+    L -48 149
+    M -20 162
+    L -22 149
+    M -40 162
+    L -39 146
+    M -30 162
+    L -31 146
+    " />
+  <path id="window" fill="#567" d="
+    M 0 40
+    L 5 40
+    L 15 80
+    L 0 83
+    L -15 80
+    L -5 40
+    Z
+
+    M 0 90
+    L 17 87
+    L 10 105
+    L 0 105
+    L -10 105
+    L -17 87
+    Z
+  " />
+
+  <g fill="#a23">
+  <path id="trailOuter" d="
+    M -60 175
+    C -60 250 -80 300 -120 344.7
+    A 365 365 0 0 0 -80 356.1
+    C -50 300 -40 250 -40 175
+    A 10 10 0 0 0 -60 175
+    Z
+  " />
+  </g>
+  <g fill="#862">
+  <path id="trailInner" d="
+    M -35 175
+    C -35 280 -50 310 -70 358.2
+    A 365 365 0 0 0 -30 363.8
+    C -20 320 -15 250 -15 175
+    A 10 10 0 0 0 -35 175
+    Z
+  " />
+  </g>
+  <path id="trailCenter" fill="#738" d="
+    M -10 175
+    C -10 300 -20 350 -20 364.5
+    A 365 365 0 0 0 20 364.5
+    C 20 350 10 300 10 175
+    A 10 10 0 0 0 -10 175
+    Z
+  " />
+
+  <use xlink:href="#trailOuter" fill="#33c" transform="scale(-1 1)" />
+  <use xlink:href="#trailInner" fill="#383" transform="scale(-1 1)" />
+
+<!--
+  <g id="wings" fill="#bcd" transform="translate(-10 20)">
+
+    <path id="wingtop" d="
+      M -262 -227
+      L -210 -270
+      L -160 -125
+      Z
+    " />
+
+    <path id="wingspan1" d="
+      M -55 70
+      L -30 20
+      L -270 -220
+      L -255 -130
+      Z
+    " />
+
+    <path id="wingspan2" d="
+      M -85 130
+      L -60 80
+      L -252 -112
+      L -237  -22
+      Z
+    " />
+
+    <path id="wingbot" d="
+      M -90 140
+      L -160 70
+      L -120 200
+      Z
+    " />
+  </g>
+  -->
+
+  <g id="wings" fill="#bcd">
+    <path id="root" d="
+      M -65 100
+      C -90 -60 -150 -50 -90 -130
+      C -90 -135 -90 -135 -100 -132
+      C -188 -90 -75 40 -83 136
+      Z
+    " />
+
+    <path id="wingtop1" d="
+      M -120 -125
+      C -40 -150 -140 -280 -100 -320
+      C -200 -300 -110 -180 -120 -125
+      Z
+    " />
+
+    <path id="wingtop2" d="
+      M -140 -80
+      C -100 -170 -200 -200 -170 -280
+      C -250 -230 -180 -150 -140 -80
+      Z
+    " />
+
+    <path id="wingside1" d="
+      M -120 5
+      C -150 -170 -250 -130 -230 -220
+      C -300 -100 -220 -150 -120 5
+      Z
+    " />
+
+    <path id="wingside2" d="
+      M -100 60
+      C -145 -90 -300 -80 -280 -150
+      C -350 -20 -120 -10 -100 60
+      Z
+    " />
+
+    <path id="wingside3" d="
+      M -90 125
+      C -80 -40 -300 35 -315 -70
+      C -370 80 -120 40 -90 125
+      Z
+    " />
+
+    <path id="wingbot1" d="
+      M -90 140
+      C -100 50 -270 95 -300 40
+      C -300 150 -120 130 -90 140
+      Z
+    " />
+
+    <path id="wingbot2" d="
+      M -90 145
+      C -180 125 -180 170 -260 130
+      C -200 250 -120 150 -90 145
+      Z
+    " />
+
+    <path id="wingbot3" d="
+      M -85 147
+      C -140 170 -160 220 -210 200
+      C -170 250 -80 220 -85 150
+      Z
+    " />
+  </g>
+
+  <use xlink:href="#wings" transform="scale(-1 1)" />
+
+</svg>
+`
+
+  $('#logo').html(svg)
+  return svg
+}
+
+function export_svg()
+{
+  svg = draw_svg()
+  $('#svg_output').text(svg)
+}
+
+function bordertext(font=uploadedfont)
+{
+  if (!font) return ''
+  var uppermodel = new makerjs.models.Text(font, uppertext, fontsizeupper, false, false, undefined, {features: {liga: false, rlig: false}})
+  var upperarc = { type: 'arc', origin: [0,0], radius: textcircle, startAngle: 90-upperspan/2, endAngle: 90+upperspan/2 }
+  makerjs.layout.childrenOnPath(uppermodel, upperarc, 0.5, true, true, true)
+
+  var upperpath = makerjs.exporter.toSVGPathData(uppermodel, {origin: [0,0], accuracy: 0.1})
+
+  var lowermodel = new makerjs.models.Text(font, lowertext, fontsizelower)
+  var lowerarc = { type: 'arc', origin: [0,0], radius: textcircle, startAngle: 270-lowerspan/2, endAngle: 270+lowerspan/2 }
+  makerjs.layout.childrenOnPath(lowermodel, lowerarc, 0.5, false, true, true)
+
+  var lowerpath = makerjs.exporter.toSVGPathData(lowermodel, {origin: [0,0], accuracy: 0.1})
+
+  return `
+    <path id="textupper" fill="${textcol}" fill-rule="evenodd" d="
+    ${upperpath}
+    " />
+    <path id="textlower" fill="${textcol}" fill-rule="evenodd" d="
+    ${lowerpath}
+    " />
+    `
+}
+
+function star(points=starpoints, outer=starouter, inner=starinner, angle=startopangle, color=starcolor)
+{
+  var svg = [`<path id="star" fill="${color}" d="`]
+  cmd = '      M'
+  for (pt = 0; pt < points; pt++) {
+    an = (angle + (pt * 360)/points) * Math.PI/180
+    svg.push(`${cmd} ${(Math.sin(an)*outer).toFixed(1)} ${(Math.cos(an)*outer).toFixed(1)}`)
+    an = (angle + ((pt+0.5) * 360)/points) * Math.PI/180
+    cmd = '      L'
+    svg.push(`${cmd} ${(Math.sin(an)*inner).toFixed(1)} ${(Math.cos(an)*inner).toFixed(1)}`)
+  }
+  svg.push('      Z','    " />')
+  return svg.join("\n")
+}
+
+function stars(offsetx=staroffsetx, offsety=staroffsety, scale=starscale)
+{
+  var positions = starpositions.split(',').map(x => parseFloat(x))
+  var svg = []
+  for (var st = 0; st < positions.length; st += 2) {
+    svg.push(`    <use xlink:href="#star" x="${positions[st]*scale+offsetx}" y="${(positions[st+1]*scale)+offsety}" />\n`)
+  }
+  return svg.join("\n")
+}
+
+add_controls()
+draw_svg()
+
+function add_controls()
+{
+  $('#controls input').each(function() {
+    var thisid = this.id
+    if (this.type == "file") return
+    this.value = window[this.id]
+    if (this.type == "number") {
+      $(this).change(function() { window[thisid] = parseFloat(this.value); draw_svg() })
+    } else {
+      $(this).change(function() { window[thisid] = this.value; draw_svg() })
+    }
+  })
+  $('#fontupload').change(do_fontload)
+  $('#fontuploadurl').change(do_fontload)
+  do_fontload()
+}
+
+function do_fontload()
+{
+  var files = document.getElementById('fontupload').files
+  if (files.length > 0) {
+    files[0].arrayBuffer().then(data => {
+      uploadedfont = opentype.parse(data)
+      draw_svg()
+    })
+  } else if (fontuploadurl) {
+    opentype.load(fontuploadurl, function(err, font) {
+      if (!err) {
+        uploadedfont = font
+        draw_svg()
+      }
+    })
+  } else {
+    uploadedfont = null
+  }
+}
+
+</script>
+</html>
