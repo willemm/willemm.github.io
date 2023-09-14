@@ -91,8 +91,6 @@ var fontuploadurl = 'Varino Bold.ttf'
 var uploadedfont
 
 // Playing card symbols (unitsPerEm = 2048)
-var extraglyphsUpm = 2048
-var extraglyphsToScale = '_xMin,_yMin,_xMax,_yMax,advanceWidth,leftSidebearing'.split(',')
 var extraglyphs = [
 { "index":1487,
   "unicode":9824,
@@ -722,51 +720,60 @@ function add_controls()
   do_fontload()
 }
 
+function add_fontglyphs(ft, eg)
+{
+  var scaleprops = '_xMin,_yMin,_xMax,_yMax,advanceWidth,leftSidebearing'.split(',')
+  var glyphs = []
+  var seen = {}
+  for (var i = 0; i < ft.glyphs.length; i++) {
+    var gl = ft.glyphs.get(i)
+    glyphs.push(gl)
+    seen[gl.unicode] = true
+  }
+  for (var i = 0; i < eg.length; i++) {
+    // Deep copy
+    var gl = JSON.parse(JSON.stringify(eg[i]))
+    if (seen[gl.unicode]) continue
+    for (var p = 0; p < scaleprops.length; p++) {
+      var prp = scaleprops[p]
+      gl[prp] = Math.round(gl[prp] * ft.unitsPerEm / gl.path.unitsPerEm)
+    }
+    for (var p = 0; p < gl.path.commands.length; p++) {
+      cm = gl.path.commands[p]
+      cm.x = Math.round(cm.x * ft.unitsPerEm / gl.path.unitsPerEm)
+      cm.y = Math.round(cm.y * ft.unitsPerEm / gl.path.unitsPerEm)
+      if (cm.x1) cm.x1 = Math.round(cm.x1 * ft.unitsPerEm / gl.path.unitsPerEm)
+      if (cm.y1) cm.y1 = Math.round(cm.y1 * ft.unitsPerEm / gl.path.unitsPerEm)
+      if (cm.x2) cm.x2 = Math.round(cm.x2 * ft.unitsPerEm / gl.path.unitsPerEm)
+      if (cm.y2) cm.y2 = Math.round(cm.y2 * ft.unitsPerEm / gl.path.unitsPerEm)
+    }
+    glyphs.push(new opentype.Glyph(gl))
+  }
+  var cft = new opentype.Font({
+    familyName: 'Combined',
+    styleName: 'Regular',
+    unitsPerEm: ft.unitsPerEm,
+    ascender: ft.ascender,
+    descender: ft.descender,
+    kerningPairs: ft.kerningPairs,
+    glyphs: glyphs
+  })
+  cft.kerningPairs = ft.kerningPairs
+  return cft
+}
+
 function do_fontload()
 {
   var files = document.getElementById('fontupload').files
   if (files.length > 0) {
     files[0].arrayBuffer().then(data => {
-      var ft = opentype.parse(data)
-      console.log(ft)
-      var glyphs = []
-      for (var i = 0; i < ft.glyphs.length; i++) {
-        glyphs.push(ft.glyphs.get(i))
-      }
-      for (var i = 0; i < extraglyphs.length; i++) {
-        // Deep copy
-        var gl = JSON.parse(JSON.stringify(extraglyphs[i]))
-        for (var p = 0; p < extraglyphsToScale.length; p++) {
-          var prp = extraglyphsToScale[p]
-          gl[prp] = Math.round(gl[prp] * ft.unitsPerEm / extraglyphsUpm)
-        }
-        for (var p = 0; p < gl.path.commands.length; p++) {
-          cm = gl.path.commands[p]
-          cm.x = Math.round(cm.x * ft.unitsPerEm / extraglyphsUpm)
-          cm.y = Math.round(cm.y * ft.unitsPerEm / extraglyphsUpm)
-          if (cm.x1) cm.x1 = Math.round(cm.x1 * ft.unitsPerEm / extraglyphsUpm)
-          if (cm.y1) cm.y1 = Math.round(cm.y1 * ft.unitsPerEm / extraglyphsUpm)
-          if (cm.x2) cm.x2 = Math.round(cm.x2 * ft.unitsPerEm / extraglyphsUpm)
-          if (cm.y2) cm.y2 = Math.round(cm.y2 * ft.unitsPerEm / extraglyphsUpm)
-        }
-        glyphs.push(new opentype.Glyph(gl))
-      }
-      uploadedfont = new opentype.Font({
-        familyName: 'Combined',
-        styleName: 'Regular',
-        unitsPerEm: ft.unitsPerEm,
-        ascender: ft.ascender,
-        descender: ft.descender,
-        kerningPairs: ft.kerningPairs,
-        glyphs: glyphs
-      })
-      uploadedfont.kerningPairs = ft.kerningPairs
+      uploadedfont = add_fontglyphs(opentype.parse(data), extraglyphs)
       draw_svg()
     })
   } else if (fontuploadurl) {
     opentype.load(fontuploadurl, function(err, font) {
       if (!err) {
-        uploadedfont = font
+        uploadedfont = add_fontglyphs(font)
         draw_svg()
       }
     })
