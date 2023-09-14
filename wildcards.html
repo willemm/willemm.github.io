@@ -720,7 +720,7 @@ function add_controls()
   do_fontload()
 }
 
-function add_fontglyphs(ft, eg)
+function add_fontglyphs(ft, eg=extraglyphs)
 {
   var scaleprops = '_xMin,_yMin,_xMax,_yMax,advanceWidth,leftSidebearing'.split(',')
   var glyphs = []
@@ -767,7 +767,7 @@ function do_fontload()
   var files = document.getElementById('fontupload').files
   if (files.length > 0) {
     files[0].arrayBuffer().then(data => {
-      uploadedfont = add_fontglyphs(opentype.parse(data), extraglyphs)
+      uploadedfont = add_fontglyphs(opentype.parse(data))
       draw_svg()
     })
   } else if (fontuploadurl) {
