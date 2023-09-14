@@ -66,7 +66,7 @@ Stars
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/makerjs@0/target/js/browser.maker.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bezier-js@2/bezier.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/opentype.js@0/dist/opentype.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opentype.js@1/dist/opentype.js"></script>
 <script>
 var makerjs = require('makerjs')
 
@@ -77,25 +77,289 @@ var border = size - 82
 var bordercol = "#445566"
 var borderedge = 0
 
-var upperspan = 160
-var lowerspan = 98
+var upperspan = 235
+var lowerspan = 95
 var textcircle = 408
 
 var textcol = "#bbccdd"
-var uppertext = '\u2665 \u2660 EOS  WILDCARDS \u2663 \u2666'
-var lowertext = 'EX SUPRA'
+var uppertext = '\u2665  \u2660  EOS  WILDCARDS  \u2663  \u2666'
+var lowertext = 'EX  SUPRA'
 var textfont = 'varino bold'
 var textfontweight = 'bold'
 
 var fontuploadurl = 'Varino Bold.ttf'
 var uploadedfont
 
+// Playing card symbols (unitsPerEm = 2048)
+var extraglyphsUpm = 2048
+var extraglyphsToScale = '_xMin,_yMin,_xMax,_yMax,advanceWidth,leftSidebearing'.split(',')
+var extraglyphs = [
+{ "index":1487,
+  "unicode":9824,
+  "unicodes":[9824],
+  "_xMin":94,
+  "_xMax":1308,
+  "_yMin":0,
+  "_yMax":1458,
+  "advanceWidth":1402,
+  "leftSideBearing":94,
+  "numberOfContours":1,
+  "endPointIndices":[43],
+  "instructionLength":0,
+  "instructions":[],
+  "path":{
+    "commands":[
+      {"type":"M","x":697,"y":1458},
+      {"type":"L","x":705,"y":1458},
+      {"type":"Q","x1":749,"y1":1406,"x":810.5,"y":1352.5},
+      {"type":"Q","x1":872,"y1":1299,"x":939,"y":1240},
+      {"type":"Q","x1":1006,"y1":1181,"x":1072,"y":1116},
+      {"type":"Q","x1":1138,"y1":1051,"x":1190.5,"y":977.5},
+      {"type":"Q","x1":1243,"y1":904,"x":1275.5,"y":821},
+      {"type":"Q","x1":1308,"y1":738,"x":1308,"y":643},
+      {"type":"L","x":1308,"y":643},
+      {"type":"Q","x1":1308,"y1":561,"x":1282,"y":498},
+      {"type":"Q","x1":1256,"y1":435,"x":1213.5,"y":392.5},
+      {"type":"Q","x1":1171,"y1":350,"x":1116.5,"y":328},
+      {"type":"Q","x1":1062,"y1":306,"x":1005,"y":306},
+      {"type":"L","x":1005,"y":306},
+      {"type":"Q","x1":950,"y1":306,"x":900.5,"y":320},
+      {"type":"Q","x1":851,"y1":334,"x":812,"y":366},
+      {"type":"L","x":812,"y":366},
+      {"type":"Q","x1":816,"y1":332,"x":826.5,"y":294},
+      {"type":"Q","x1":837,"y1":256,"x":856,"y":218},
+      {"type":"Q","x1":875,"y1":180,"x":902,"y":143},
+      {"type":"Q","x1":929,"y1":106,"x":966,"y":75},
+      {"type":"L","x":966,"y":75},
+      {"type":"L","x":966,"y":0},
+      {"type":"L","x":436,"y":0},
+      {"type":"L","x":436,"y":75},
+      {"type":"Q","x1":473,"y1":106,"x":500,"y":143},
+      {"type":"Q","x1":527,"y1":180,"x":546,"y":218},
+      {"type":"Q","x1":565,"y1":256,"x":575.5,"y":294},
+      {"type":"Q","x1":586,"y1":332,"x":590,"y":366},
+      {"type":"L","x":590,"y":366},
+      {"type":"Q","x1":551,"y1":334,"x":501.5,"y":320},
+      {"type":"Q","x1":452,"y1":306,"x":397,"y":306},
+      {"type":"L","x":397,"y":306},
+      {"type":"Q","x1":340,"y1":306,"x":285.5,"y":328},
+      {"type":"Q","x1":231,"y1":350,"x":188.5,"y":392.5},
+      {"type":"Q","x1":146,"y1":435,"x":120,"y":498},
+      {"type":"Q","x1":94,"y1":561,"x":94,"y":643},
+      {"type":"L","x":94,"y":643},
+      {"type":"Q","x1":94,"y1":738,"x":126.5,"y":821},
+      {"type":"Q","x1":159,"y1":904,"x":211.5,"y":977.5},
+      {"type":"Q","x1":264,"y1":1051,"x":330,"y":1116},
+      {"type":"Q","x1":396,"y1":1181,"x":463,"y":1240},
+      {"type":"Q","x1":530,"y1":1299,"x":591.5,"y":1353},
+      {"type":"Q","x1":653,"y1":1407,"x":697,"y":1458},
+      {"type":"L","x":697,"y":1458},
+      {"type":"Z"}
+    ],
+    "fill":"black",
+    "stroke":null,
+    "strokeWidth":1,
+    "unitsPerEm":2048
+  }
+},
+{ "index":1490,
+  "unicode":9827,
+  "unicodes":[9827],
+  "_xMin":94,
+  "_xMax":1308,
+  "_yMin":0,
+  "_yMax":1434,
+  "advanceWidth":1402,
+  "leftSideBearing":94,
+  "numberOfContours":1,
+  "endPointIndices":[56],
+  "instructionLength":0,
+  "instructions":[],
+  "path":{
+    "commands":[
+      {"type":"M","x":966,"y":0},
+      {"type":"L","x":436,"y":0},
+      {"type":"L","x":436,"y":75},
+      {"type":"Q","x1":464,"y1":98,"x":491,"y":133},
+      {"type":"Q","x1":518,"y1":168,"x":539,"y":214},
+      {"type":"Q","x1":560,"y1":260,"x":573,"y":317},
+      {"type":"Q","x1":586,"y1":374,"x":586,"y":442},
+      {"type":"L","x":586,"y":442},
+      {"type":"Q","x1":567,"y1":429,"x":548.5,"y":419},
+      {"type":"Q","x1":530,"y1":409,"x":509,"y":401.5},
+      {"type":"Q","x1":488,"y1":394,"x":463.5,"y":390},
+      {"type":"Q","x1":439,"y1":386,"x":408,"y":386},
+      {"type":"L","x":408,"y":386},
+      {"type":"Q","x1":343,"y1":386,"x":285.5,"y":408},
+      {"type":"Q","x1":228,"y1":430,"x":185.5,"y":470.5},
+      {"type":"Q","x1":143,"y1":511,"x":118.5,"y":569},
+      {"type":"Q","x1":94,"y1":627,"x":94,"y":699},
+      {"type":"L","x":94,"y":699},
+      {"type":"Q","x1":94,"y1":764,"x":116.5,"y":820.5},
+      {"type":"Q","x1":139,"y1":877,"x":180.5,"y":919.5},
+      {"type":"Q","x1":222,"y1":962,"x":279.5,"y":987},
+      {"type":"Q","x1":337,"y1":1012,"x":406,"y":1013},
+      {"type":"L","x":406,"y":1013},
+      {"type":"Q","x1":390,"y1":1065,"x":390,"y":1120},
+      {"type":"L","x":390,"y":1120},
+      {"type":"Q","x1":390,"y1":1184,"x":412.5,"y":1241.5},
+      {"type":"Q","x1":435,"y1":1299,"x":476,"y":1341.5},
+      {"type":"Q","x1":517,"y1":1384,"x":574,"y":1409},
+      {"type":"Q","x1":631,"y1":1434,"x":701,"y":1434},
+      {"type":"L","x":701,"y":1434},
+      {"type":"Q","x1":771,"y1":1434,"x":828,"y":1409},
+      {"type":"Q","x1":885,"y1":1384,"x":926,"y":1341.5},
+      {"type":"Q","x1":967,"y1":1299,"x":989.5,"y":1241.5},
+      {"type":"Q","x1":1012,"y1":1184,"x":1012,"y":1120},
+      {"type":"L","x":1012,"y":1120},
+      {"type":"Q","x1":1012,"y1":1065,"x":996,"y":1013},
+      {"type":"L","x":996,"y":1013},
+      {"type":"Q","x1":1065,"y1":1012,"x":1122.5,"y":987},
+      {"type":"Q","x1":1180,"y1":962,"x":1221.5,"y":919.5},
+      {"type":"Q","x1":1263,"y1":877,"x":1285.5,"y":820.5},
+      {"type":"Q","x1":1308,"y1":764,"x":1308,"y":699},
+      {"type":"L","x":1308,"y":699},
+      {"type":"Q","x1":1308,"y1":627,"x":1283.5,"y":569},
+      {"type":"Q","x1":1259,"y1":511,"x":1216.5,"y":470.5},
+      {"type":"Q","x1":1174,"y1":430,"x":1116.5,"y":408},
+      {"type":"Q","x1":1059,"y1":386,"x":994,"y":386},
+      {"type":"L","x":994,"y":386},
+      {"type":"Q","x1":963,"y1":386,"x":938.5,"y":390},
+      {"type":"Q","x1":914,"y1":394,"x":893,"y":401.5},
+      {"type":"Q","x1":872,"y1":409,"x":853.5,"y":419},
+      {"type":"Q","x1":835,"y1":429,"x":816,"y":442},
+      {"type":"L","x":816,"y":442},
+      {"type":"Q","x1":816,"y1":374,"x":828.5,"y":317},
+      {"type":"Q","x1":841,"y1":260,"x":862,"y":214},
+      {"type":"Q","x1":883,"y1":168,"x":910,"y":133},
+      {"type":"Q","x1":937,"y1":98,"x":966,"y":75},
+      {"type":"L","x":966,"y":75},
+      {"type":"L","x":966,"y":0},
+      {"type":"Z"}
+    ],
+    "fill":"black",
+    "stroke":null,
+    "strokeWidth":1,
+    "unitsPerEm":2048
+  }
+},
+{ "index":1492,
+  "unicode":9829,
+  "unicodes":[9829],
+  "_xMin":94,
+  "_xMax":1308,
+  "_yMin":120,
+  "_yMax":1315,
+  "advanceWidth":1402,
+  "leftSideBearing":94,
+  "numberOfContours":1,
+  "endPointIndices":[35],
+  "instructionLength":0,
+  "instructions":[],
+  "path":{
+    "commands":[
+      {"type":"M","x":966,"y":0},
+      {"type":"L","x":436,"y":0},
+      {"type":"L","x":436,"y":75},
+      {"type":"Q","x1":464,"y1":98,"x":491,"y":133},
+      {"type":"Q","x1":518,"y1":168,"x":539,"y":214},
+      {"type":"Q","x1":560,"y1":260,"x":573,"y":317},
+      {"type":"Q","x1":586,"y1":374,"x":586,"y":442},
+      {"type":"L","x":586,"y":442},
+      {"type":"Q","x1":567,"y1":429,"x":548.5,"y":419},
+      {"type":"Q","x1":530,"y1":409,"x":509,"y":401.5},
+      {"type":"Q","x1":488,"y1":394,"x":463.5,"y":390},
+      {"type":"Q","x1":439,"y1":386,"x":408,"y":386},
+      {"type":"L","x":408,"y":386},
+      {"type":"Q","x1":343,"y1":386,"x":285.5,"y":408},
+      {"type":"Q","x1":228,"y1":430,"x":185.5,"y":470.5},
+      {"type":"Q","x1":143,"y1":511,"x":118.5,"y":569},
+      {"type":"Q","x1":94,"y1":627,"x":94,"y":699},
+      {"type":"L","x":94,"y":699},
+      {"type":"Q","x1":94,"y1":764,"x":116.5,"y":820.5},
+      {"type":"Q","x1":139,"y1":877,"x":180.5,"y":919.5},
+      {"type":"Q","x1":222,"y1":962,"x":279.5,"y":987},
+      {"type":"Q","x1":337,"y1":1012,"x":406,"y":1013},
+      {"type":"L","x":406,"y":1013},
+      {"type":"Q","x1":390,"y1":1065,"x":390,"y":1120},
+      {"type":"L","x":390,"y":1120},
+      {"type":"Q","x1":390,"y1":1184,"x":412.5,"y":1241.5},
+      {"type":"Q","x1":435,"y1":1299,"x":476,"y":1341.5},
+      {"type":"Q","x1":517,"y1":1384,"x":574,"y":1409},
+      {"type":"Q","x1":631,"y1":1434,"x":701,"y":1434},
+      {"type":"L","x":701,"y":1434},
+      {"type":"Q","x1":771,"y1":1434,"x":828,"y":1409},
+      {"type":"Q","x1":885,"y1":1384,"x":926,"y":1341.5},
+      {"type":"Q","x1":967,"y1":1299,"x":989.5,"y":1241.5},
+      {"type":"Q","x1":1012,"y1":1184,"x":1012,"y":1120},
+      {"type":"L","x":1012,"y":1120},
+      {"type":"Q","x1":1012,"y1":1065,"x":996,"y":1013},
+      {"type":"L","x":996,"y":1013},
+      {"type":"Q","x1":1065,"y1":1012,"x":1122.5,"y":987},
+      {"type":"Q","x1":1180,"y1":962,"x":1221.5,"y":919.5},
+      {"type":"Q","x1":1263,"y1":877,"x":1285.5,"y":820.5},
+      {"type":"Q","x1":1308,"y1":764,"x":1308,"y":699},
+      {"type":"L","x":1308,"y":699},
+      {"type":"Q","x1":1308,"y1":627,"x":1283.5,"y":569},
+      {"type":"Q","x1":1259,"y1":511,"x":1216.5,"y":470.5},
+      {"type":"Q","x1":1174,"y1":430,"x":1116.5,"y":408},
+      {"type":"Q","x1":1059,"y1":386,"x":994,"y":386},
+      {"type":"L","x":994,"y":386},
+      {"type":"Q","x1":963,"y1":386,"x":938.5,"y":390},
+      {"type":"Q","x1":914,"y1":394,"x":893,"y":401.5},
+      {"type":"Q","x1":872,"y1":409,"x":853.5,"y":419},
+      {"type":"Q","x1":835,"y1":429,"x":816,"y":442},
+      {"type":"L","x":816,"y":442},
+      {"type":"Q","x1":816,"y1":374,"x":828.5,"y":317},
+      {"type":"Q","x1":841,"y1":260,"x":862,"y":214},
+      {"type":"Q","x1":883,"y1":168,"x":910,"y":133},
+      {"type":"Q","x1":937,"y1":98,"x":966,"y":75},
+      {"type":"L","x":966,"y":75},
+      {"type":"L","x":966,"y":0},
+      {"type":"Z"}
+    ],
+    "fill":"black",
+    "stroke":null,
+    "strokeWidth":1,
+    "unitsPerEm":2048
+  }
+},
+{ "index":1493,
+  "unicode":9830,
+  "unicodes":[9830],
+  "_xMin":205,
+  "_xMax":1198,
+  "_yMin":0,
+  "_yMax":1434,
+  "advanceWidth":1402,
+  "leftSideBearing":205,
+  "numberOfContours":1,
+  "endPointIndices":[3],
+  "instructionLength":0,
+  "instructions":[],
+  "path":{
+    "commands":[
+      {"type":"M","x":701,"y":0},
+      {"type":"L","x":205,"y":716},
+      {"type":"L","x":701,"y":1434},
+      {"type":"L","x":1198,"y":716},
+      {"type":"L","x":701,"y":0},
+      {"type":"Z"}
+    ],
+    "fill":"black",
+    "stroke":null,
+    "strokeWidth":1,
+    "unitsPerEm":2048
+    }
+}
+]
+
 var fontsizeupper = 84
 var fontsizelower = 84
 
 var starpoints = 4
-var starouter = 5
-var starinner = 2.5
+var starouter = 10
+var starinner = 5
 var startopangle = 180
 var staroffsetx = 0
 var staroffsety = 0
@@ -119,7 +383,7 @@ var starpositions = `
 -340, -72,
 -309, -133,
 -312, -163,
--204, -283,
+-202, -288,
 -214, -271,
  
 302, 124,
@@ -463,7 +727,40 @@ function do_fontload()
   var files = document.getElementById('fontupload').files
   if (files.length > 0) {
     files[0].arrayBuffer().then(data => {
-      uploadedfont = opentype.parse(data)
+      var ft = opentype.parse(data)
+      console.log(ft)
+      var glyphs = []
+      for (var i = 0; i < ft.glyphs.length; i++) {
+        glyphs.push(ft.glyphs.get(i))
+      }
+      for (var i = 0; i < extraglyphs.length; i++) {
+        // Deep copy
+        var gl = JSON.parse(JSON.stringify(extraglyphs[i]))
+        for (var p = 0; p < extraglyphsToScale.length; p++) {
+          var prp = extraglyphsToScale[p]
+          gl[prp] = Math.round(gl[prp] * ft.unitsPerEm / extraglyphsUpm)
+        }
+        for (var p = 0; p < gl.path.commands.length; p++) {
+          cm = gl.path.commands[p]
+          cm.x = Math.round(cm.x * ft.unitsPerEm / extraglyphsUpm)
+          cm.y = Math.round(cm.y * ft.unitsPerEm / extraglyphsUpm)
+          if (cm.x1) cm.x1 = Math.round(cm.x1 * ft.unitsPerEm / extraglyphsUpm)
+          if (cm.y1) cm.y1 = Math.round(cm.y1 * ft.unitsPerEm / extraglyphsUpm)
+          if (cm.x2) cm.x2 = Math.round(cm.x2 * ft.unitsPerEm / extraglyphsUpm)
+          if (cm.y2) cm.y2 = Math.round(cm.y2 * ft.unitsPerEm / extraglyphsUpm)
+        }
+        glyphs.push(new opentype.Glyph(gl))
+      }
+      uploadedfont = new opentype.Font({
+        familyName: 'Combined',
+        styleName: 'Regular',
+        unitsPerEm: ft.unitsPerEm,
+        ascender: ft.ascender,
+        descender: ft.descender,
+        kerningPairs: ft.kerningPairs,
+        glyphs: glyphs
+      })
+      uploadedfont.kerningPairs = ft.kerningPairs
       draw_svg()
     })
   } else if (fontuploadurl) {
